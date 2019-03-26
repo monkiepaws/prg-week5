@@ -1,0 +1,215 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="Models.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012.Azure" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="BOOK">
+          <Key>
+            <PropertyRef Name="ISBN" />
+          </Key>
+          <Property Name="ISBN" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Title" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="YearPublished" Type="int" />
+          <Property Name="AuthorId" Type="int" />
+          <Property Name="AuthorFirstName" Type="nvarchar" MaxLength="50" />
+          <Property Name="AuthorSurname" Type="nvarchar" MaxLength="50" />
+          <Property Name="AuthorTFN" Type="nvarchar" MaxLength="50" />
+        </EntityType>
+        <EntityType Name="LOAN">
+          <Key>
+            <PropertyRef Name="StudentId" />
+            <PropertyRef Name="ISBN" />
+          </Key>
+          <Property Name="StudentId" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="ISBN" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="DueDate" Type="datetime2" Precision="7" Nullable="false" />
+        </EntityType>
+        <EntityType Name="STUDENT">
+          <Key>
+            <PropertyRef Name="StudentId" />
+          </Key>
+          <Property Name="StudentId" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="FirstName" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="LastName" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Email" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="PhoneNumber" Type="nvarchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <Association Name="FK_LOAN_To_BOOK">
+          <End Role="BOOK" Type="Self.BOOK" Multiplicity="1" />
+          <End Role="LOAN" Type="Self.LOAN" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="BOOK">
+              <PropertyRef Name="ISBN" />
+            </Principal>
+            <Dependent Role="LOAN">
+              <PropertyRef Name="ISBN" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_LOAN_To_STUDENT">
+          <End Role="STUDENT" Type="Self.STUDENT" Multiplicity="1" />
+          <End Role="LOAN" Type="Self.LOAN" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="STUDENT">
+              <PropertyRef Name="StudentId" />
+            </Principal>
+            <Dependent Role="LOAN">
+              <PropertyRef Name="StudentId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="ModelsStoreContainer">
+          <EntitySet Name="BOOK" EntityType="Self.BOOK" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="LOAN" EntityType="Self.LOAN" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="STUDENT" EntityType="Self.STUDENT" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_LOAN_To_BOOK" Association="Self.FK_LOAN_To_BOOK">
+            <End Role="BOOK" EntitySet="BOOK" />
+            <End Role="LOAN" EntitySet="LOAN" />
+          </AssociationSet>
+          <AssociationSet Name="FK_LOAN_To_STUDENT" Association="Self.FK_LOAN_To_STUDENT">
+            <End Role="STUDENT" EntitySet="STUDENT" />
+            <End Role="LOAN" EntitySet="LOAN" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="Models" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="BOOK">
+          <Key>
+            <PropertyRef Name="ISBN" />
+          </Key>
+          <Property Name="ISBN" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Title" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="YearPublished" Type="Int32" />
+          <Property Name="AuthorId" Type="Int32" />
+          <Property Name="AuthorFirstName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="AuthorSurname" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="AuthorTFN" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="LOANs" Relationship="Self.FK_LOAN_To_BOOK" FromRole="BOOK" ToRole="LOAN" />
+        </EntityType>
+        <EntityType Name="LOAN">
+          <Key>
+            <PropertyRef Name="StudentId" />
+            <PropertyRef Name="ISBN" />
+          </Key>
+          <Property Name="StudentId" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="ISBN" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="DueDate" Type="DateTime" Nullable="false" Precision="7" />
+          <NavigationProperty Name="BOOK" Relationship="Self.FK_LOAN_To_BOOK" FromRole="LOAN" ToRole="BOOK" />
+          <NavigationProperty Name="STUDENT" Relationship="Self.FK_LOAN_To_STUDENT" FromRole="LOAN" ToRole="STUDENT" />
+        </EntityType>
+        <EntityType Name="STUDENT">
+          <Key>
+            <PropertyRef Name="StudentId" />
+          </Key>
+          <Property Name="StudentId" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="FirstName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="LastName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Email" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="PhoneNumber" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <NavigationProperty Name="LOANs" Relationship="Self.FK_LOAN_To_STUDENT" FromRole="STUDENT" ToRole="LOAN" />
+        </EntityType>
+        <Association Name="FK_LOAN_To_BOOK">
+          <End Role="BOOK" Type="Self.BOOK" Multiplicity="1" />
+          <End Role="LOAN" Type="Self.LOAN" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="BOOK">
+              <PropertyRef Name="ISBN" />
+            </Principal>
+            <Dependent Role="LOAN">
+              <PropertyRef Name="ISBN" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_LOAN_To_STUDENT">
+          <End Role="STUDENT" Type="Self.STUDENT" Multiplicity="1" />
+          <End Role="LOAN" Type="Self.LOAN" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="STUDENT">
+              <PropertyRef Name="StudentId" />
+            </Principal>
+            <Dependent Role="LOAN">
+              <PropertyRef Name="StudentId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="Entities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="BOOKs" EntityType="Self.BOOK" />
+          <EntitySet Name="LOANs" EntityType="Self.LOAN" />
+          <EntitySet Name="STUDENTs" EntityType="Self.STUDENT" />
+          <AssociationSet Name="FK_LOAN_To_BOOK" Association="Self.FK_LOAN_To_BOOK">
+            <End Role="BOOK" EntitySet="BOOKs" />
+            <End Role="LOAN" EntitySet="LOANs" />
+          </AssociationSet>
+          <AssociationSet Name="FK_LOAN_To_STUDENT" Association="Self.FK_LOAN_To_STUDENT">
+            <End Role="STUDENT" EntitySet="STUDENTs" />
+            <End Role="LOAN" EntitySet="LOANs" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="ModelsStoreContainer" CdmEntityContainer="Entities">
+          <EntitySetMapping Name="BOOKs">
+            <EntityTypeMapping TypeName="Models.BOOK">
+              <MappingFragment StoreEntitySet="BOOK">
+                <ScalarProperty Name="ISBN" ColumnName="ISBN" />
+                <ScalarProperty Name="Title" ColumnName="Title" />
+                <ScalarProperty Name="YearPublished" ColumnName="YearPublished" />
+                <ScalarProperty Name="AuthorId" ColumnName="AuthorId" />
+                <ScalarProperty Name="AuthorFirstName" ColumnName="AuthorFirstName" />
+                <ScalarProperty Name="AuthorSurname" ColumnName="AuthorSurname" />
+                <ScalarProperty Name="AuthorTFN" ColumnName="AuthorTFN" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="LOANs">
+            <EntityTypeMapping TypeName="Models.LOAN">
+              <MappingFragment StoreEntitySet="LOAN">
+                <ScalarProperty Name="StudentId" ColumnName="StudentId" />
+                <ScalarProperty Name="ISBN" ColumnName="ISBN" />
+                <ScalarProperty Name="DueDate" ColumnName="DueDate" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="STUDENTs">
+            <EntityTypeMapping TypeName="Models.STUDENT">
+              <MappingFragment StoreEntitySet="STUDENT">
+                <ScalarProperty Name="StudentId" ColumnName="StudentId" />
+                <ScalarProperty Name="FirstName" ColumnName="FirstName" />
+                <ScalarProperty Name="LastName" ColumnName="LastName" />
+                <ScalarProperty Name="Email" ColumnName="Email" />
+                <ScalarProperty Name="PhoneNumber" ColumnName="PhoneNumber" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>
